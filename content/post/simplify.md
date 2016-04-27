@@ -1,18 +1,23 @@
-+++
-date = "2016-04-04T15:09:13+02:00"
-draft = true
-title = "Simplify"
+---
+date: "2016-04-27T15:09:13+02:00"
+draft: true
+title: "Simplify"
+slug: simplify
+categories:
+    - programming
+---
 
-+++
+Let's take a look at how easy it is to start out with the best of intentions and then quickly lose control.
 
-Let's take a look at how easy it is to start out with the best of intentions, following [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) principles, and then quickly lose control. By adhering more closely to [Single Responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) and enlisting the help of [Open/Closed](https://en.wikipedia.org/wiki/Open/closed_principle), we then solve the mess.
+By adhering more closely to [Single Responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) and enlisting the help of [Open/Closed](https://en.wikipedia.org/wiki/Open/closed_principle), we then solve the mess.
 
+<!--more-->
 
 ## It starts out innocently enough
 
 So I have this `CtaService` class.
 
-It needs to provide calls to action to a user, based on events that happened to said user. We know there are many different kinds of events, which leads to different kinds of Ctas, so we delegate creation responsibility to a set of factories.
+It needs to provide calls to action to a user, based on events that happened to said user. We know there are many different kinds of events, which leads to different kinds of Ctas, so we delegate Cta creation to a set of factories.
 
 ```php
 interface EventStore
@@ -53,7 +58,7 @@ class CtaService
 }
 ```
 
-Everyting is nice and clean and life is good.
+Everyting is nice and clean, if a little naive, and life is good.
 
 ## But then it gets weird
 
@@ -111,7 +116,7 @@ class CtaService
 }
 ```
 
-Sorted! But, you know, now the air is a little funky around this piece of code.
+Sorted! But, you know, now the air is a little funky.
 
 
 ## And it gets weirder
@@ -157,7 +162,7 @@ class CtaService
 }
 ```
 
-And this is how my face ends up pasted on a dartboard.
+And this is how my face will end up pasted on a dartboard by whoever needs to maintain this next year.
 
 
 ## Thinking cap on
@@ -170,7 +175,7 @@ Let's be honest, we never designed our `CtaService`, it just sort of happened. W
 
 ### Error #2 - we asked too much from a single class
 
-It was clear from the beginning that this service was always have to delegate actual `Cta` creation to some collaborators. We started out well, but then succumbed to the temptation of keeping it simple by solving each new requirement with its own ad-hoc piece of code, bloating the `CtaService` and its methods.
+It was clear from the beginning that this service was always have to delegate actual `Cta` creation to some collaborators. We started out well, but then keept it simple the wrong way: solving each new requirement with its own ad-hoc piece of code. This set a very bad example. All future development here is going to follow the same pattern and this class will only get worse and worse.
 
 
 ## A solution
@@ -243,8 +248,8 @@ This service doesn't actually do anything of consequence anymore. It doesn't cre
 
 Thing is, though, now we're free to inject as many or as few `BaseCtaFactory` and `EventCtaFactory` instances as we need, meaning this class will probably never need to be changed again. Also, each factory is free to work in whatever way is needed. Each can be unit tested individually.
 
-This code is, in essence, infinitely flexible and expansible. And did it really cost us that much development time? Did it really? I don't think so.
+This code is, in essence, infinitely flexible and expansible. And did it cost us that much development time? Did it really? I don't think so.
 
-Software development gets very complicated very quickly not because we're dealing with hard problems (99% of all code is CRUD anyway, at least in web applications), but because we fail to put in the tiny little extra effort of making things maintainable from the start. Then we end up with huge balls of mud no one likes working with.
+Software development gets very complicated very quickly not necessarily because we're dealing with hard problems (99% of all code is CRUD anyway, at least in web applications), but because we fail to put in the tiny little extra effort of making things maintainable from the start. Then we end up with huge balls of mud no one likes working with.
 
-Following the SOLID principles really, _really_ helps.
+Following the [SOLID](https://en.wikipedia.org/wiki/SOLID_\(object-oriented_design\)) principles really, _really_ helps.
